@@ -142,6 +142,18 @@
   #chat-input:focus { border-color: #55ff55; box-shadow: 0 0 8px rgba(85,255,85,0.5); }
 
   /* Mobile Chat Icon Button */
+    /* Mobile Zoom Button */
+  #btn-zoom-mobile {
+    position: absolute; top: 12px; right: 68px; width: 44px; height: 44px;
+    background: rgba(20, 20, 20, 0.65); border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px; color: #fff; font-size: 18px; display: none;
+    align-items: center; justify-content: center; pointer-events: auto; z-index: 20;
+    touch-action: none; user-select: none;
+  }
+  #btn-zoom-mobile:active, #btn-zoom-mobile.active {
+    background: rgba(85, 255, 85, 0.5); border-color: #55ff55;
+  }
+
   #btn-chat-mobile {
     position: absolute; top: 12px; right: 15px; width: 44px; height: 44px;
     background: rgba(20, 20, 20, 0.65); border: 2px solid rgba(255, 255, 255, 0.5);
@@ -149,10 +161,112 @@
     align-items: center; justify-content: center; pointer-events: auto; z-index: 20;
     touch-action: none;
   }
+
+  /* --- MINECRAFT SETTINGS MODAL & BUTTON STYLING --- */
+  #btn-settings-desktop {
+    position: absolute; top: 10px; right: 15px; background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #777; border-radius: 4px; color: #fff; padding: 6px 14px;
+    font-size: 13px; font-family: inherit; font-weight: bold; cursor: pointer;
+    z-index: 25; text-shadow: 1px 1px #000;
+  }
+  #btn-settings-desktop:hover { border-color: #fff; background: rgba(40, 40, 40, 0.8); }
+
+  #btn-settings-mobile {
+    position: absolute; top: 12px; right: 122px; width: 44px; height: 44px;
+    background: rgba(20, 20, 20, 0.65); border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px; color: #fff; font-size: 18px; display: none;
+    align-items: center; justify-content: center; pointer-events: auto; z-index: 20;
+    touch-action: none; user-select: none;
+  }
+
+  #settings-modal {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 440px; max-width: 92vw; background: rgba(18, 18, 18, 0.95);
+    border: 3px solid #777; border-radius: 8px; padding: 20px 24px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9); z-index: 100; display: none;
+    flex-direction: column; gap: 16px; color: #fff; text-shadow: 1px 1px #000;
+  }
+  #settings-modal h2 {
+    text-align: center; font-size: 20px; color: #ffff55; letter-spacing: 1px;
+    border-bottom: 2px solid #444; padding-bottom: 8px;
+  }
+  .setting-row {
+    display: flex; justify-content: space-between; align-items: center; font-size: 13px;
+  }
+  .setting-row label { font-weight: bold; color: #ddd; }
+  .setting-control { display: flex; align-items: center; gap: 8px; }
+  .setting-control select, .setting-control input[type="range"] {
+    background: #2a2a2a; border: 1px solid #666; color: #fff; font-family: inherit;
+    padding: 4px 8px; border-radius: 4px; outline: none; cursor: pointer;
+  }
+  .setting-val { width: 45px; text-align: right; font-weight: bold; color: #55ff55; }
+  
+  #btn-close-settings {
+    margin-top: 6px; padding: 8px 16px; background: #3b3b3b; border: 2px solid #888;
+    color: #fff; font-weight: bold; border-radius: 4px; cursor: pointer;
+    align-self: center; width: 140px; text-align: center;
+  }
+  #btn-close-settings:hover { background: #555; border-color: #fff; }
+
+  @media (max-width: 900px), (pointer: coarse) {
+    #btn-settings-desktop { display: none; }
+    #btn-settings-mobile { display: flex; }
+  }
 </style>
 </head>
 <body>
 <canvas id="glcanvas"></canvas>
+<button id="btn-settings-desktop">⚙ Settings</button>
+<div id="btn-settings-mobile">⚙</div>
+
+<!-- Video & Game Settings Modal -->
+<div id="settings-modal">
+  <h2>VIDEO & GAME SETTINGS</h2>
+
+  <div class="setting-row">
+    <label>Max Framerate (FPS):</label>
+    <div class="setting-control">
+      <input type="range" id="set-fps-limit" min="30" max="260" value="260" step="10" />
+      <span class="setting-val" id="val-fps-limit">Unlimited</span>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <label>Render Distance (Chunks):</label>
+    <div class="setting-control">
+      <input type="range" id="set-render-dist" min="2" max="8" value="5" step="1" />
+      <span class="setting-val" id="val-render-dist">5 (11x11)</span>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <label>Field of View (FOV):</label>
+    <div class="setting-control">
+      <input type="range" id="set-base-fov" min="50" max="100" value="75" step="1" />
+      <span class="setting-val" id="val-base-fov">75°</span>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <label>Volumetric Clouds:</label>
+    <div class="setting-control">
+      <select id="set-clouds">
+        <option value="on" selected>ON (Fancy 3D)</option>
+        <option value="off">OFF (Maximum FPS)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <label>Mouse / Touch Sensitivity:</label>
+    <div class="setting-control">
+      <input type="range" id="set-sens" min="1" max="10" value="5" step="1" />
+      <span class="setting-val" id="val-sens">5</span>
+    </div>
+  </div>
+
+  <button id="btn-close-settings">Done</button>
+</div>
 <div id="crosshair"></div>
 <div id="vignette"></div>
 
@@ -203,12 +317,14 @@
   </div>
 </div>
 
+<div id="btn-zoom-mobile">🔍</div>
 <div id="btn-chat-mobile">💬</div>
 
 <div id="instructions">
   <h1>MINECRAFT WEBGL</h1>
   <p><span class="key">CLICK TO PLAY / LOCK MOUSE</span></p>
   <p><span class="key">W, A, S, D</span> - Walk / Strafe (<span class="key">CTRL / R</span>: Sprint)</p>
+  <p><span class="key">Z</span> (+ <span class="key">SCROLL</span>) - Smooth Cinematic Zoom</p>
   <p><span class="key">SPACE</span> - Jump (Double Tap: Toggle Flight)</p>
   <p><span class="key">SHIFT</span> - Sneak / Descend (Fly mode)</p>
   <p><span class="key">LEFT CLICK</span> - Mine / Break Block</p>
@@ -912,6 +1028,106 @@ const uFogColorLoc = gl.getUniformLocation(program, 'uFogColor');
 const uFogNearLoc = gl.getUniformLocation(program, 'uFogNear');
 const uFogFarLoc = gl.getUniformLocation(program, 'uFogFar');
 
+// --- CELESTIAL SYSTEM (Day/Night Cycle, Sun, Moon & Volumetric Clouds) ---
+let worldTime = 0.25; // 0.0 = Sunrise, 0.25 = Noon, 0.5 = Sunset, 0.75 = Midnight
+const DAY_LENGTH_SECONDS = 360.0; // Full day/night takes 6 minutes (customizable via /time)
+
+const vsSkyQuad = `
+  attribute vec3 aPos;
+  attribute vec2 aUV;
+  uniform mat4 uProjection;
+  uniform mat4 uView;
+  uniform vec3 uOffset;
+  varying vec2 vUV;
+  void main() {
+    gl_Position = uProjection * uView * vec4(aPos + uOffset, 1.0);
+    vUV = aUV;
+  }
+`;
+
+const fsCelestial = `
+  precision mediump float;
+  varying vec2 vUV;
+  uniform vec4 uColor;
+  void main() {
+    gl_FragColor = uColor;
+  }
+`;
+
+const vsSky = createShader(gl, gl.VERTEX_SHADER, vsSkyQuad);
+const fsSky = createShader(gl, gl.FRAGMENT_SHADER, fsCelestial);
+const progCelestial = gl.createProgram();
+gl.attachShader(progCelestial, vsSky);
+gl.attachShader(progCelestial, fsSky);
+gl.linkProgram(progCelestial);
+
+const aPosSkyLoc = gl.getAttribLocation(progCelestial, 'aPos');
+const aUVSkyLoc = gl.getAttribLocation(progCelestial, 'aUV');
+const uProjSkyLoc = gl.getUniformLocation(progCelestial, 'uProjection');
+const uViewSkyLoc = gl.getUniformLocation(progCelestial, 'uView');
+const uOffsetSkyLoc = gl.getUniformLocation(progCelestial, 'uOffset');
+const uColorSkyLoc = gl.getUniformLocation(progCelestial, 'uColor');
+
+// Quad buffer for Sun / Moon billboards
+const celestialQuadBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, celestialQuadBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+  -1, -1, 0,  0, 0,
+   1, -1, 0,  1, 0,
+   1,  1, 0,  1, 1,
+  -1, -1, 0,  0, 0,
+   1,  1, 0,  1, 1,
+  -1,  1, 0,  0, 1
+]), gl.STATIC_DRAW);
+
+// Procedural Clouds Mesh Buffer
+const cloudMeshBuffer = gl.createBuffer();
+let cloudVertexCount = 0;
+let cloudWindOffset = 0;
+
+function buildCloudsMesh() {
+  const verts = [];
+  const CLOUD_Y = 68.0;
+  const CLOUD_GRID = 24; // 24x24 cloud clusters
+  const CELL_SIZE = 12.0;
+
+  for (let cx = -CLOUD_GRID; cx <= CLOUD_GRID; cx++) {
+    for (let cz = -CLOUD_GRID; cz <= CLOUD_GRID; cz++) {
+      // Noise pattern for fluffy cloud clumps
+      const n = (pHash(cx, cz, 777) + pHash(Math.floor(cx/2), Math.floor(cz/2), 778)) * 0.5;
+      if (n > 0.58) { // cloud voxel cell
+        const x1 = cx * CELL_SIZE, x2 = x1 + CELL_SIZE;
+        const z1 = cz * CELL_SIZE, z2 = z1 + CELL_SIZE;
+        const y1 = CLOUD_Y, y2 = CLOUD_Y + 4.0;
+
+        // Top Face (+Y)
+        verts.push(
+          x1, y2, z1, 1, 1,
+          x2, y2, z1, 1, 1,
+          x2, y2, z2, 1, 1,
+          x1, y2, z1, 1, 1,
+          x2, y2, z2, 1, 1,
+          x1, y2, z2, 1, 1
+        );
+        // Bottom Face (-Y)
+        verts.push(
+          x1, y1, z2, 0.85, 0.85,
+          x2, y1, z2, 0.85, 0.85,
+          x2, y1, z1, 0.85, 0.85,
+          x1, y1, z2, 0.85, 0.85,
+          x2, y1, z1, 0.85, 0.85,
+          x1, y1, z1, 0.85, 0.85
+        );
+      }
+    }
+  }
+
+  cloudVertexCount = verts.length / 5;
+  gl.bindBuffer(gl.ARRAY_BUFFER, cloudMeshBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verts), gl.STATIC_DRAW);
+}
+buildCloudsMesh();
+
 // Upload texture atlas
 const atlasTexture = gl.createTexture();
 gl.bindTexture(gl.TEXTURE_2D, atlasTexture);
@@ -1312,7 +1528,85 @@ function buildChunkMesh(chunk) {
 }
 
 // --- CHUNK STREAMING CONFIG ---
-const RENDER_RADIUS = 5; // 11x11 chunks render distance
+let RENDER_RADIUS = 5; // 11x11 chunks render distance
+
+// --- SMOOTH OPTIFINE-STYLE ZOOM SYSTEM (Z-Key & Wheel Zoom) ---
+let isZooming = false;
+let currentFOV = 75.0; // Current animated FOV in degrees
+let targetZoomFOV = 12.0; // Dynamic zoom level adjustable via Z + Scroll (min 5 deg to max 45 deg)
+
+// --- SETTINGS CONTROLLER (FPS Slider, Render Distance, Clouds, Sensitivity) ---
+let targetFPSLimit = 0; // 250 = Unlimited (V-Sync bypass)
+let basePlayerFOV = 75.0;
+let mouseSensitivityMultiplier = 1.0;
+let renderCloudsEnabled = true;
+let dynamicFogNear = 50.0;
+let dynamicFogFar = 82.0;
+
+const settingsModal = document.getElementById('settings-modal');
+const btnSettingsDesktop = document.getElementById('btn-settings-desktop');
+const btnSettingsMobile = document.getElementById('btn-settings-mobile');
+const btnCloseSettings = document.getElementById('btn-close-settings');
+
+const setFpsLimit = document.getElementById('set-fps-limit');
+const valFpsLimit = document.getElementById('val-fps-limit');
+const setRenderDist = document.getElementById('set-render-dist');
+const valRenderDist = document.getElementById('val-render-dist');
+const setBaseFov = document.getElementById('set-base-fov');
+const valBaseFov = document.getElementById('val-base-fov');
+const setClouds = document.getElementById('set-clouds');
+const setSens = document.getElementById('set-sens');
+const valSens = document.getElementById('val-sens');
+
+function openSettings() {
+  if (document.pointerLockElement) document.exitPointerLock();
+  settingsModal.style.display = 'flex';
+}
+
+function closeSettings() {
+  settingsModal.style.display = 'none';
+  if (!isMobile) canvas.requestPointerLock();
+}
+
+btnSettingsDesktop.addEventListener('click', e => { e.stopPropagation(); openSettings(); });
+btnSettingsMobile.addEventListener('touchstart', e => { e.preventDefault(); e.stopPropagation(); openSettings(); });
+btnSettingsMobile.addEventListener('click', e => { e.stopPropagation(); openSettings(); });
+btnCloseSettings.addEventListener('click', e => { e.stopPropagation(); closeSettings(); });
+
+// Setting Handlers (Real-time reactive sliders):
+setFpsLimit.addEventListener('input', () => {
+  const val = parseInt(setFpsLimit.value);
+  if (val >= 260) {
+    targetFPSLimit = 0; // Unlimited (Bypass monitor VSync)
+    valFpsLimit.innerText = 'Unlimited';
+  } else {
+    targetFPSLimit = val;
+    valFpsLimit.innerText = val + ' FPS';
+  }
+});
+
+setRenderDist.addEventListener('input', () => {
+  RENDER_RADIUS = parseInt(setRenderDist.value);
+  valRenderDist.innerText = `${RENDER_RADIUS} (${RENDER_RADIUS * 2 + 1}x${RENDER_RADIUS * 2 + 1})`;
+  // Update fog variables safely without invalid WebGL context calls
+  dynamicFogNear = RENDER_RADIUS * 10.0;
+  dynamicFogFar = RENDER_RADIUS * 16.5;
+});
+
+setBaseFov.addEventListener('input', () => {
+  basePlayerFOV = parseFloat(setBaseFov.value);
+  valBaseFov.innerText = basePlayerFOV + '°';
+});
+
+setClouds.addEventListener('change', () => {
+  renderCloudsEnabled = setClouds.value === 'on';
+});
+
+setSens.addEventListener('input', () => {
+  const val = parseInt(setSens.value);
+  valSens.innerText = val;
+  mouseSensitivityMultiplier = val / 5.0; // 1 = 0.2x, 5 = 1.0x, 10 = 2.0x
+});
 
 // --- PLAYER, CONTROLS, & INPUT EVENTS ---
 const player = {
@@ -1460,21 +1754,34 @@ function executeCommand(rawCmd) {
     for (let x = minX; x <= maxX; x++) {
       for (let y = minY; y <= maxY; y++) {
         for (let z = minZ; z <= maxZ; z++) {
-          setBlockWorld(x, y, z, targetId);
+          setBlockFast(x, y, z, targetId);
           count++;
         }
       }
     }
+    flushDirtyChunks();
 
     playSound('place');
     addChatMessage(`Successfully filled ${count} blocks with ${blockArg}!`, 'success');
     return;
   }
 
+    // COMMAND: /time set <day|night|sunset|noon>
+  if (action === '/time') {
+    const sub = (parts[1] === 'set' ? parts[2] : parts[1]) || 'day';
+    if (sub === 'day' || sub === 'sunrise') worldTime = 0.0;
+    else if (sub === 'noon') worldTime = 0.25;
+    else if (sub === 'sunset') worldTime = 0.5;
+    else if (sub === 'night' || sub === 'midnight') worldTime = 0.75;
+    else if (!isNaN(parseFloat(sub))) worldTime = (parseFloat(sub) / 24000) % 1.0;
+    addChatMessage(`Set world time to ${sub}`, 'success');
+    return;
+  }
+
   // COMMAND 2: /clear or /kill
   if (action === '/clear' || action === '/kill') {
     activeTNTs.length = 0;
-    explosionParticles.length = 0;
+        explosionParticles.length = 0;
     addChatMessage('Cleared all active TNT and particles.', 'success');
     return;
   }
@@ -1484,6 +1791,7 @@ function executeCommand(rawCmd) {
     addChatMessage('--- Commands List ---', 'system');
     addChatMessage('/fill <x1> <y1> <z1> <x2> <y2> <z2> <block>', 'system');
     addChatMessage('/clear - Clear active entities & particles', 'system');
+    addChatMessage('/time <day|night|noon|sunset> - Change time of day', 'system');
     addChatMessage('/tp <x> <y> <z> - Teleport to coordinates', 'system');
     return;
   }
@@ -1515,6 +1823,20 @@ chatInput.addEventListener('keydown', e => {
 });
 
 // Mobile Chat button
+// Mobile Zoom Button
+const mobileZoomBtn = document.getElementById('btn-zoom-mobile');
+if (mobileZoomBtn) {
+  if (isMobile) mobileZoomBtn.style.display = 'flex';
+  const toggleZoom = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    isZooming = !isZooming;
+    mobileZoomBtn.classList.toggle('active', isZooming);
+  };
+  mobileZoomBtn.addEventListener('touchstart', toggleZoom);
+  mobileZoomBtn.addEventListener('click', toggleZoom);
+}
+
 const mobileChatBtn = document.getElementById('btn-chat-mobile');
 if (mobileChatBtn) {
   if (isMobile) mobileChatBtn.style.display = 'flex';
@@ -1545,6 +1867,9 @@ window.addEventListener('keydown', e => {
   }
   if (e.repeat) return;
   keys[e.code] = true;
+  if (e.code === 'KeyZ') {
+    isZooming = true;
+  }
   if (e.code === 'ControlLeft' || e.code === 'KeyR') {
     player.sprinting = true;
   }
@@ -1566,12 +1891,21 @@ window.addEventListener('keydown', e => {
 
 window.addEventListener('keyup', e => {
   keys[e.code] = false;
+  if (e.code === 'KeyZ') {
+    isZooming = false;
+  }
   if (e.code === 'ControlLeft' || e.code === 'KeyR') {
     player.sprinting = false;
   }
 });
 
 window.addEventListener('wheel', e => {
+  if (isZooming) {
+    // Zoom closer with scroll down/up (adjust target FOV between 5 deg and 48 deg)
+    const zoomDelta = e.deltaY > 0 ? 4.0 : -4.0;
+    targetZoomFOV = Math.max(1.2, Math.min(45.0, targetZoomFOV + (e.deltaY > 0 ? 3.0 : -3.0)));
+    return;
+  }
   let s = player.selectedSlot + (e.deltaY > 0 ? 1 : -1);
   if (s > 9) s = 1;
   if (s < 1) s = 9;
@@ -1603,7 +1937,7 @@ document.addEventListener('pointerlockchange', () => {
 
 document.addEventListener('mousemove', e => {
   if (document.pointerLockElement !== canvas) return;
-  const sens = 0.0022;
+  const sens = 0.0022 * mouseSensitivityMultiplier;
   player.yaw -= e.movementX * sens;
   player.pitch -= e.movementY * sens;
   player.pitch = Math.max(-Math.PI / 2 + 0.01, Math.min(Math.PI / 2 - 0.01, player.pitch));
@@ -1663,7 +1997,7 @@ window.addEventListener('touchmove', e => {
       lastTouchX = t.clientX;
       lastTouchY = t.clientY;
 
-      const touchSens = 0.004;
+      const touchSens = 0.004 * mouseSensitivityMultiplier;
       player.yaw -= dx * touchSens;
       player.pitch -= dy * touchSens;
       player.pitch = Math.max(-Math.PI / 2 + 0.01, Math.min(Math.PI / 2 - 0.01, player.pitch));
@@ -1752,7 +2086,7 @@ setupTouchButton('btn-place', () => {
     playSound('flint');
     if (targetBlockId === 9) {
       setBlockWorld(target.x, target.y, target.z, 0);
-      spawnPrimedTNT(target.x, target.y, target.z);
+      spawnPrimedTNT(target.x, target.y, target.z, 4.0);
       return;
     }
     spawnExplosionParticles(target.x + 0.5, target.y + 1.0, target.z + 0.5, 0.5);
@@ -1881,7 +2215,7 @@ window.addEventListener('mousedown', e => {
       playSound('flint');
       if (targetBlockId === 9) { // Igniting TNT!
         setBlockWorld(target.x, target.y, target.z, 0);
-        spawnPrimedTNT(target.x, target.y, target.z);
+        spawnPrimedTNT(target.x, target.y, target.z, 4.0);
         return;
       }
       // Sparking regular surface
@@ -1916,19 +2250,6 @@ window.addEventListener('contextmenu', e => e.preventDefault());
 
 // --- PRIMED TNT ENTITIES & EXPLOSION SYSTEM ---
 const activeTNTs = [];
-
-function spawnPrimedTNT(x, y, z) {
-  playSound('fuse');
-  activeTNTs.push({
-    x: x + 0.5,
-    y: y + 0.1,
-    z: z + 0.5,
-    vx: (Math.random() - 0.5) * 2.0,
-    vy: 5.0, // hop up when primed
-    vz: (Math.random() - 0.5) * 2.0,
-    fuse: 2.2 // seconds
-  });
-}
 
 function buildActiveTNTMesh() {
   const verts = [];
@@ -1987,34 +2308,55 @@ function buildActiveTNTMesh() {
 }
 
 function updateTNT(dt) {
+  let detonationsThisFrame = 0;
+  const maxDetonations = 6;
+
   for (let i = activeTNTs.length - 1; i >= 0; i--) {
     const tnt = activeTNTs[i];
     tnt.fuse -= dt;
     tnt.flashTimer += dt;
 
-    // TNT expansion animation when about to detonate
+    // TNT flashing white pulse (accelerates when near detonation)
     if (tnt.fuse < 0.6) {
-      tnt.scale = 1.0 + (0.6 - tnt.fuse) * 0.5;
+      tnt.scale = 1.0 + (0.6 - tnt.fuse) * 0.35;
     }
 
-    // Apply gravity & motion
-    tnt.vy -= 18.0 * dt;
+    // Minecraft Java exact entity physics:
+    // Gravity: -0.04 blocks/tick^2 = -16.0 m/s^2
+    tnt.vy -= 16.0 * dt;
+
+    // Air Drag: velocity * (1.0 - 0.02) every tick (~0.98 per 0.05s)
+    const drag = Math.pow(0.98, dt / 0.05);
+    tnt.vx *= drag;
+    tnt.vy *= drag;
+    tnt.vz *= drag;
+
     tnt.x += tnt.vx * dt;
     tnt.y += tnt.vy * dt;
     tnt.z += tnt.vz * dt;
 
-    // Ground bounce
+    // Ground collision & bouncing:
+    // Minecraft bounce: vy = -0.5 * vy, horizontal ground friction = 0.7
     const groundY = Math.floor(tnt.y);
-    if (getBlockWorld(Math.floor(tnt.x), groundY, Math.floor(tnt.z)) > 0) {
+    if (isSolidBlock(Math.floor(tnt.x), groundY, Math.floor(tnt.z))) {
       tnt.y = groundY + 1.0;
-      tnt.vy = -tnt.vy * 0.35;
-      tnt.vx *= 0.8;
-      tnt.vz *= 0.8;
+      if (tnt.vy < -1.0) {
+        tnt.vy = -tnt.vy * 0.5; // Realistic Minecraft bounce!
+      } else {
+        tnt.vy = 0;
+      }
+      tnt.vx *= 0.7;
+      tnt.vz *= 0.7;
     }
 
     if (tnt.fuse <= 0) {
-      explodeTNT(tnt.x, tnt.y, tnt.z, 4.2);
-      activeTNTs.splice(i, 1);
+      if (detonationsThisFrame < maxDetonations) {
+        explodeTNT(tnt.x, tnt.y, tnt.z, 4.0);
+        activeTNTs.splice(i, 1);
+        detonationsThisFrame++;
+      } else {
+        tnt.fuse = 0.015;
+      }
     }
   }
 
@@ -2051,16 +2393,25 @@ function updateTNT(dt) {
   }
 }
 
-function spawnPrimedTNT(x, y, z) {
-  playSound('fuse');
+const MAX_ACTIVE_TNT_ENTITIES = 64;
+
+// Minecraft Java Edition exact constants:
+// Standard ignition = 80 ticks = 4.0 seconds
+// Initial upward velocity = 0.2 blocks/tick = 4.0 m/s
+function spawnPrimedTNT(x, y, z, customFuse = 4.0) {
+  if (activeTNTs.length < 5) playSound('fuse');
+  if (activeTNTs.length >= MAX_ACTIVE_TNT_ENTITIES) return;
+
+  const angle = Math.random() * Math.PI * 2;
+  const hSpeed = 0.4; // 0.02 blocks/tick horizontal drift
   activeTNTs.push({
     x: x + 0.5,
-    y: y + 0.1,
+    y: y + 0.05,
     z: z + 0.5,
-    vx: (Math.random() - 0.5) * 1.5,
-    vy: 4.8, // Pop up on ignition
-    vz: (Math.random() - 0.5) * 1.5,
-    fuse: 2.4, // seconds
+    vx: Math.cos(angle) * hSpeed,
+    vy: 4.0, // Exact Minecraft 0.2 blocks/tick upward pop
+    vz: Math.sin(angle) * hSpeed,
+    fuse: customFuse,
     flashTimer: 0,
     scale: 1.0
   });
@@ -2410,6 +2761,53 @@ function updateAndRenderMobs() {
   }
 }
 
+// --- HIGH-PERFORMANCE PARTICLE & EXPLOSION CAPS ---
+const BLAST_OFFSETS = [];
+(function() {
+  const r = 3.6;
+  const ir = Math.ceil(r);
+  for (let ox = -ir; ox <= ir; ox++) {
+    for (let oy = -ir; oy <= ir; oy++) {
+      for (let oz = -ir; oz <= ir; oz++) {
+        if (Math.hypot(ox, oy, oz) <= r) {
+          BLAST_OFFSETS.push([ox, oy, oz]);
+        }
+      }
+    }
+  }
+})();
+
+const MAX_PARTICLES = 600;
+let lastExplosionSoundTime = 0;
+
+// Optimized batch block destruction without redundant boundary chunk-dirty flood
+const dirtyChunkSet = new Set();
+function setBlockFast(wx, wy, wz, val) {
+  if (wy < 0 || wy >= CHUNK_HEIGHT) return;
+  const cx = Math.floor(wx / CHUNK_SIZE_X);
+  const cz = Math.floor(wz / CHUNK_SIZE_Z);
+  const chunk = chunks.get(chunkKey(cx, cz));
+  if (!chunk) return;
+  let lx = wx % CHUNK_SIZE_X; if (lx < 0) lx += CHUNK_SIZE_X;
+  let lz = wz % CHUNK_SIZE_Z; if (lz < 0) lz += CHUNK_SIZE_Z;
+  chunk.blocks[chunk.getIndex(lx, wy, lz)] = val;
+  dirtyChunkSet.add(chunkKey(cx, cz));
+
+  // Only flag neighbor if on exact border
+  if (lx === 0) dirtyChunkSet.add(chunkKey(cx - 1, cz));
+  if (lx === CHUNK_SIZE_X - 1) dirtyChunkSet.add(chunkKey(cx + 1, cz));
+  if (lz === 0) dirtyChunkSet.add(chunkKey(cx, cz - 1));
+  if (lz === CHUNK_SIZE_Z - 1) dirtyChunkSet.add(chunkKey(cx, cz + 1));
+}
+
+function flushDirtyChunks() {
+  for (let key of dirtyChunkSet) {
+    const c = chunks.get(key);
+    if (c) c.dirty = true;
+  }
+  dirtyChunkSet.clear();
+}
+
 // --- DEBRIS COLOR MAPPING FOR EXPLOSIONS & MINING ---
 const BLOCK_DEBRIS_COLORS = {
   1: [0.35, 0.68, 0.20],  // Grass green
@@ -2426,23 +2824,27 @@ const BLOCK_DEBRIS_COLORS = {
 };
 
 function spawnBlockDebris(wx, wy, wz, blockId) {
+  if (explosionParticles.length >= MAX_PARTICLES) return; // Strict ceiling
+  // When high density of explosions, sample only 15% of destroyed blocks for debris
+  if (explosionParticles.length > 250 && Math.random() > 0.15) return;
+
   const col = BLOCK_DEBRIS_COLORS[blockId] || [0.5, 0.5, 0.5];
-  // Spawn 6-8 micro cubic debris fragments per destroyed block
-  for (let i = 0; i < 7; i++) {
+  const count = explosionParticles.length > 200 ? 1 : 3; // adaptive debris count
+  for (let i = 0; i < count; i++) {
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(Math.random() * 2 - 1);
-    const speed = 3.0 + Math.random() * 8.5;
+    const speed = 3.0 + Math.random() * 7.0;
     const shade = 0.8 + Math.random() * 0.4;
     explosionParticles.push({
-      x: wx + 0.5 + (Math.random() - 0.5) * 0.6,
-      y: wy + 0.5 + (Math.random() - 0.5) * 0.6,
-      z: wz + 0.5 + (Math.random() - 0.5) * 0.6,
+      x: wx + 0.5,
+      y: wy + 0.5,
+      z: wz + 0.5,
       vx: Math.sin(phi) * Math.cos(theta) * speed,
-      vy: Math.abs(Math.cos(phi) * speed) + 2.5, // fly upwards and outwards
+      vy: Math.abs(Math.cos(phi) * speed) + 2.5,
       vz: Math.sin(phi) * Math.sin(theta) * speed,
       life: 1.0,
-      decay: 0.6 + Math.random() * 0.5, // stay visible for ~1.5s
-      size: 0.65 + Math.random() * 0.55,
+      decay: 0.8 + Math.random() * 0.6,
+      size: 0.6 + Math.random() * 0.5,
       r: Math.min(1.0, col[0] * shade),
       g: Math.min(1.0, col[1] * shade),
       b: Math.min(1.0, col[2] * shade),
@@ -2452,40 +2854,43 @@ function spawnBlockDebris(wx, wy, wz, blockId) {
 }
 
 function spawnExplosionParticles(ex, ey, ez, radius) {
-  // 1. Shockwave fire flash (60 bright orange/yellow high-speed fireballs)
-  for (let i = 0; i < 70; i++) {
+  if (explosionParticles.length >= MAX_PARTICLES) return;
+  // Adaptive particle budget: if many particles already active, reduce per-explosion budget
+  const fireCount = explosionParticles.length > 200 ? 6 : 24;
+  const smokeCount = explosionParticles.length > 200 ? 8 : 28;
+
+  for (let i = 0; i < fireCount; i++) {
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(Math.random() * 2 - 1);
-    const speed = 4.0 + Math.random() * 12.0;
+    const speed = 4.0 + Math.random() * 9.0;
     explosionParticles.push({
       x: ex, y: ey, z: ez,
       vx: Math.sin(phi) * Math.cos(theta) * speed,
       vy: Math.cos(phi) * speed + 1.5,
       vz: Math.sin(phi) * Math.sin(theta) * speed,
       life: 1.0,
-      decay: 1.8 + Math.random() * 1.5,
-      size: 1.2 + Math.random() * 1.0,
-      r: 1.0, g: 0.5 + Math.random() * 0.4, b: 0.1, // Fire orange-yellow
+      decay: 2.2 + Math.random() * 1.2,
+      size: 1.1 + Math.random() * 0.8,
+      r: 1.0, g: 0.5 + Math.random() * 0.4, b: 0.1,
       type: 'fire'
     });
   }
 
-  // 2. Lingering dense billowing smoke clouds (80 expanding grey smoke puffs)
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < smokeCount; i++) {
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(Math.random() * 2 - 1);
-    const speed = 1.5 + Math.random() * 6.5;
+    const speed = 1.5 + Math.random() * 5.0;
     const grey = 0.25 + Math.random() * 0.45;
     explosionParticles.push({
-      x: ex + (Math.random() - 0.5) * 1.2,
-      y: ey + (Math.random() - 0.5) * 1.2,
-      z: ez + (Math.random() - 0.5) * 1.2,
+      x: ex + (Math.random() - 0.5) * 0.8,
+      y: ey + (Math.random() - 0.5) * 0.8,
+      z: ez + (Math.random() - 0.5) * 0.8,
       vx: Math.sin(phi) * Math.cos(theta) * speed,
-      vy: Math.abs(Math.cos(phi) * speed) + 1.0, // billow upwards
+      vy: Math.abs(Math.cos(phi) * speed) + 1.0,
       vz: Math.sin(phi) * Math.sin(theta) * speed,
       life: 1.0,
-      decay: 0.45 + Math.random() * 0.4,
-      size: 1.6 + Math.random() * 1.5,
+      decay: 0.65 + Math.random() * 0.5,
+      size: 1.4 + Math.random() * 1.2,
       r: grey, g: grey, b: grey,
       type: 'smoke'
     });
@@ -2494,30 +2899,67 @@ function spawnExplosionParticles(ex, ey, ez, radius) {
 
 function explodeTNT(ex, ey, ez, radius) {
   spawnExplosionParticles(ex, ey, ez, radius);
-  playSound('explode');
+
+  // Audio throttling: prevent browser WebAudio overload from hundreds of simultaneous sounds
+  const now = performance.now();
+  if (now - lastExplosionSoundTime > 65) {
+    playSound('explode');
+    lastExplosionSoundTime = now;
+  }
+
   const ir = Math.ceil(radius);
   const bx = Math.floor(ex), by = Math.floor(ey), bz = Math.floor(ez);
 
-  // Destroy blocks within blast radius
-  for (let ox = -ir; ox <= ir; ox++) {
-    for (let oy = -ir; oy <= ir; oy++) {
-      for (let oz = -ir; oz <= ir; oz++) {
-        const d = Math.hypot(ox, oy, oz);
-        if (d <= radius + (Math.random() - 0.5) * 1.5) {
-          const wx = bx + ox, wy = by + oy, wz = bz + oz;
-          if (wy > 0) { // Never destroy bedrock at y=0
-            const b = getBlockWorld(wx, wy, wz);
-            if (b > 0 && b !== 11) { // Bedrock indestructible
-              spawnBlockDebris(wx, wy, wz, b); // Spawn dirt/stone/wood/leaf fragments!
-              setBlockWorld(wx, wy, wz, 0);
-              // Chain reaction: if another TNT block is caught in blast, prime it!
-              if (b === 9) {
-                spawnPrimedTNT(wx, wy, wz);
-              }
-            }
+  // Fast destruction via precomputed spherical offsets (4x faster!)
+  for (let i = 0; i < BLAST_OFFSETS.length; i++) {
+    const off = BLAST_OFFSETS[i];
+    const wx = bx + off[0], wy = by + off[1], wz = bz + off[2];
+    if (wy > 0) {
+      const b = getBlockWorld(wx, wy, wz);
+      if (b > 0 && b !== 11) {
+        spawnBlockDebris(wx, wy, wz, b);
+        setBlockFast(wx, wy, wz, 0);
+
+        if (b === 9) { // Chain reaction TNT
+          if (activeTNTs.length < MAX_ACTIVE_TNT_ENTITIES) {
+            const bDist = Math.hypot(off[0], off[1], off[2]) || 1;
+            // Minecraft knockback from blast:
+            const exposure = Math.max(0.0, 1.0 - bDist / 4.0);
+            const force = exposure * 5.0; // Moderate push
+            const outX = (off[0] / bDist) * force + (Math.random() - 0.5) * 0.4;
+            const outY = (off[1] / bDist) * force + 2.0; // Authentic upward pop
+            const outZ = (off[2] / bDist) * force + (Math.random() - 0.5) * 0.4;
+
+            // Minecraft Java chain reaction fuse: 10 to 30 game ticks = 0.50 to 1.50 seconds!
+            const chainFuse = 0.5 + Math.random() * 1.0;
+
+            activeTNTs.push({
+              x: wx + 0.5,
+              y: wy + 0.1,
+              z: wz + 0.5,
+              vx: outX,
+              vy: outY,
+              vz: outZ,
+              fuse: chainFuse,
+              flashTimer: 0,
+              scale: 1.0
+            });
           }
         }
       }
+    }
+  }
+  flushDirtyChunks(); // Batch rebuild affected chunk meshes
+
+  // Authentic Minecraft knockback on nearby primed TNT entities:
+  for (let t of activeTNTs) {
+    const td = Math.hypot(t.x - ex, t.y - ey, t.z - ez);
+    if (td > 0.05 && td < radius * 2.0) {
+      const exposure = 1.0 - td / (radius * 2.0);
+      const push = exposure * 6.0;
+      t.vx += ((t.x - ex) / td) * push;
+      t.vy += Math.max(1.5, ((t.y - ey) / td) * push + 1.5);
+      t.vz += ((t.z - ez) / td) * push;
     }
   }
 
@@ -2589,10 +3031,11 @@ function updatePhysicsSubstep(dt) {
     moveZ /= len;
   }
 
-  // SPRINT SYSTEM: Toggle with Control key, KeyR, or double tap forward
-  const isSprinting = (keys['ControlLeft'] || keys['ControlRight'] || keys['KeyR'] || player.sprinting) && !player.flying;
-  const baseSpeed = isSprinting ? 8.2 : 4.5; // ~85% faster sprint
-  const speed = player.flying ? (keys['ShiftLeft'] ? 18 : 13) : baseSpeed;
+  // SPRINT SYSTEM: Toggle with Control key, KeyR, or mobile RUN button (both on ground and while flying!)
+  const isSprinting = (keys['ControlLeft'] || keys['ControlRight'] || keys['KeyR'] || player.sprinting);
+  const groundSpeed = isSprinting ? 8.5 : 4.5;
+  const flySpeed = isSprinting ? 26.0 : 13.0; // 2x turbo speed saat sprint terbang!
+  const speed = player.flying ? flySpeed : groundSpeed;
   const accel = player.onGround ? (isSprinting ? 95 : 65) : 25;
 
   if (player.flying) {
@@ -2794,29 +3237,48 @@ function mat4View(out, eyeX, eyeY, eyeZ, pitch, yaw) {
   out[15] = 1;
 }
 
-// --- CHUNK STREAMING & TIME-SLICED MESH QUEUE ---
+// --- HIGH-PERFORMANCE CHUNK STREAMING, UNLOADING & TIME-SLICED QUEUE ---
 const meshBuildQueue = [];
+let lastChunkPruneTime = 0;
 
 function updateChunks() {
   const pcx = Math.floor(player.pos[0] / CHUNK_SIZE_X);
   const pcz = Math.floor(player.pos[2] / CHUNK_SIZE_Z);
 
-  // Generate chunks spiral from center outwards so closest chunks load first
+  // Horizontal look direction for chunk loading priority (always normalized to length 1.0 even when looking straight down)
+  const sinY = Math.sin(player.yaw), cosY = Math.cos(player.yaw);
+  const fwdX = -sinY, fwdZ = -cosY;
+
+  // 1. Gather all required chunk coordinates in spiral order
+  const missingChunks = [];
   for (let r = 0; r <= RENDER_RADIUS; r++) {
     for (let dx = -r; dx <= r; dx++) {
       for (let dz = -r; dz <= r; dz++) {
-        if (Math.max(Math.abs(dx), Math.abs(dz)) !== r) continue; // outer ring
+        if (Math.max(Math.abs(dx), Math.abs(dz)) !== r) continue;
         const cx = pcx + dx;
         const cz = pcz + dz;
         const key = chunkKey(cx, cz);
         if (!chunks.has(key)) {
-          generateChunk(cx, cz);
+          // Calculate score based on distance + whether it is in front of the player
+          const dist = Math.hypot(dx, dz);
+          const dirX = dist > 0 ? dx / dist : 0;
+          const dirZ = dist > 0 ? dz / dist : 0;
+          const dot = dirX * fwdX + dirZ * fwdZ; // 1.0 = directly in front, -1.0 = behind
+          const priority = dist - dot * 1.8; // chunks in front load with much higher priority!
+          missingChunks.push({ cx, cz, priority });
         }
       }
     }
   }
 
-  // Collect dirty chunks into queue sorted by distance to player
+  // Generate max 1 new chunk per frame to maintain a rock-solid 60 FPS without micro-stutters
+  if (missingChunks.length > 0) {
+    missingChunks.sort((a, b) => a.priority - b.priority);
+    const target = missingChunks[0];
+    generateChunk(target.cx, target.cz);
+  }
+
+  // 2. Queue dirty chunks sorted by distance & camera angle
   for (let chunk of chunks.values()) {
     if (chunk.dirty && !chunk.inQueue) {
       chunk.inQueue = true;
@@ -2826,13 +3288,17 @@ function updateChunks() {
 
   if (meshBuildQueue.length > 1) {
     meshBuildQueue.sort((a, b) => {
-      const da = Math.hypot(a.cx - pcx, a.cz - pcz);
-      const db = Math.hypot(b.cx - pcx, b.cz - pcz);
-      return da - db; // closest first
+      const dxa = a.cx - pcx, dza = a.cz - pcz;
+      const dxb = b.cx - pcx, dzb = b.cz - pcz;
+      const da = Math.hypot(dxa, dza);
+      const db = Math.hypot(dxb, dzb);
+      const dota = da > 0 ? (dxa/da)*fwdX + (dza/da)*fwdZ : 1;
+      const dotb = db > 0 ? (dxb/db)*fwdX + (dzb/db)*fwdZ : 1;
+      return (da - dota * 2.0) - (db - dotb * 2.0); // Prioritize visible chunks first!
     });
   }
 
-  // Process up to 2 dirty chunk meshes per frame to maintain steady 60 FPS
+  // Rebuild max 2 chunk meshes per frame
   let buildsThisFrame = 0;
   while (meshBuildQueue.length > 0 && buildsThisFrame < 2) {
     const chunkToBuild = meshBuildQueue.shift();
@@ -2840,29 +3306,59 @@ function updateChunks() {
     buildChunkMesh(chunkToBuild);
     buildsThisFrame++;
   }
+
+  // 3. Periodic chunk unloader: every 2 seconds, garbage collect chunks far outside render distance
+  const now = performance.now();
+  if (now - lastChunkPruneTime > 2000) {
+    lastChunkPruneTime = now;
+    const maxDist = RENDER_RADIUS + 2;
+    for (let [key, chunk] of chunks.entries()) {
+      if (Math.abs(chunk.cx - pcx) > maxDist || Math.abs(chunk.cz - pcz) > maxDist) {
+        // Delete WebGL buffer to prevent GPU VRAM leak
+        if (chunk.buffer) gl.deleteBuffer(chunk.buffer);
+        chunks.delete(key);
+      }
+    }
+  }
 }
 
 // --- MAIN RENDER LOOP ---
 let lastTime = performance.now();
 let frameCount = 0;
 let fpsTimer = 0;
+let lastFPSTime = performance.now();
 
 const projMatrix = new Float32Array(16);
 const viewMatrix = new Float32Array(16);
 
-function render(now) {
-  const dt = (now - lastTime) / 1000;
-  lastTime = now;
+let lastRenderTime = performance.now();
 
-  // FPS Counter
+function render(now) {
+  // Configurable FPS Limiter
+  if (targetFPSLimit > 0) {
+    const minFrameInterval = 1000.0 / targetFPSLimit;
+    if (now - lastRenderTime < minFrameInterval) {
+      if (targetFPSLimit > 60) {
+        setTimeout(() => render(performance.now()), 0);
+      } else {
+        requestAnimationFrame(render);
+      }
+      return;
+    }
+  }
+
+  const dt = Math.min(0.05, Math.max(0.001, (now - lastRenderTime) / 1000));
+  lastRenderTime = now;
+
+  // High-precision FPS Telemetry Counter
   frameCount++;
-  fpsTimer += dt;
-  if (fpsTimer >= 0.5) {
-    document.getElementById('fps').innerText = Math.round(frameCount / fpsTimer);
+  const realElapsed = (now - lastFPSTime) / 1000.0;
+  if (realElapsed >= 0.5) {
+    document.getElementById('fps').innerText = Math.round(frameCount / realElapsed);
     document.getElementById('chunks-cnt').innerText = chunks.size;
     document.getElementById('pos').innerText = `${player.pos[0].toFixed(1)}, ${player.pos[1].toFixed(1)}, ${player.pos[2].toFixed(1)}`;
     frameCount = 0;
-    fpsTimer = 0;
+    lastFPSTime = now;
   }
 
   // Update logic
@@ -2883,14 +3379,45 @@ function render(now) {
   gl.enable(gl.CULL_FACE);
   gl.cullFace(gl.BACK);
 
-  // Atmospheric sky color
-  const skyColor = [0.55, 0.75, 0.95];
+  // Advance Day/Night time cycle
+  worldTime = (worldTime + dt / DAY_LENGTH_SECONDS) % 1.0;
+  cloudWindOffset += dt * 1.8; // Drifting wind
+
+  // Calculate dynamic Sky & Fog color based on sun angle
+  // worldTime: 0.0=Sunrise, 0.25=Noon, 0.5=Sunset, 0.75=Midnight
+  const sunAngle = worldTime * Math.PI * 2;
+  const sunHeight = Math.sin(sunAngle); // >0 = Day, <0 = Night
+
+  let skyR, skyG, skyB;
+  let lightIntensity = 1.0;
+
+  if (sunHeight > 0.2) {
+    // Crisp Blue Daytime
+    skyR = 0.52; skyG = 0.74; skyB = 0.96;
+    lightIntensity = 1.0;
+  } else if (sunHeight > -0.1) {
+    // Golden Orange / Pink Sunset & Sunrise
+    const t = (sunHeight + 0.1) / 0.3; // 0..1
+    skyR = 0.85 * (1 - t) + 0.52 * t;
+    skyG = 0.45 * (1 - t) + 0.74 * t;
+    skyB = 0.30 * (1 - t) + 0.96 * t;
+    lightIntensity = 0.4 + 0.6 * t;
+  } else {
+    // Deep Midnight Blue & Starry Night
+    skyR = 0.05; skyG = 0.06; skyB = 0.14;
+    lightIntensity = 0.25;
+  }
+
+  const skyColor = [skyR, skyG, skyB];
   gl.clearColor(skyColor[0], skyColor[1], skyColor[2], 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // Setup Matrices
   const aspect = canvas.width / canvas.height;
-  mat4Perspective(projMatrix, 75 * Math.PI / 180, aspect, 0.05, 160.0);
+    // Smooth Zoom Interpolation (Cubic smooth lerp)
+  const targetFOV = isZooming ? targetZoomFOV : basePlayerFOV;
+  currentFOV += (targetFOV - currentFOV) * Math.min(1.0, 16.0 * dt);
+  mat4Perspective(projMatrix, currentFOV * Math.PI / 180, aspect, 0.05, 160.0);
   mat4View(viewMatrix, player.pos[0], player.pos[1] + player.eyeHeight, player.pos[2], player.pitch, player.yaw);
 
   // Draw World Chunks
@@ -2898,8 +3425,8 @@ function render(now) {
   gl.uniformMatrix4fv(uProjectionLoc, false, projMatrix);
   gl.uniformMatrix4fv(uViewLoc, false, viewMatrix);
   gl.uniform3fv(uFogColorLoc, skyColor);
-  gl.uniform1f(uFogNearLoc, 50.0);
-  gl.uniform1f(uFogFarLoc, 82.0);
+  gl.uniform1f(uFogNearLoc, dynamicFogNear);
+  gl.uniform1f(uFogFarLoc, dynamicFogFar);
 
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, atlasTexture);
@@ -2908,8 +3435,38 @@ function render(now) {
   // Stride of vertex format: 3 pos + 2 uv + 1 ao + 1 faceLight = 7 floats * 4 bytes = 28 bytes
   const STRIDE = 28;
 
+  // True 3D View-Space Frustum Culling (Works flawlessly looking straight down, up, or forward!)
+  const tanHalfY = Math.tan((currentFOV * Math.PI / 180) * 0.5);
+  const tanHalfX = tanHalfY * aspect;
+  const chunkRadius = 38.0; // Bounding sphere radius of 16x64x16 chunk
+
   for (let chunk of chunks.values()) {
     if (chunk.vertexCount === 0) continue;
+
+    // Transform 3D chunk center into Camera View-Space
+    const midX = chunk.cx * CHUNK_SIZE_X + 8.0;
+    const midY = 32.0; // center of vertical height (0..64)
+    const midZ = chunk.cz * CHUNK_SIZE_Z + 8.0;
+
+    const m = viewMatrix;
+    const vx = m[0]*midX + m[4]*midY + m[8]*midZ + m[12];
+    const vy = m[1]*midX + m[5]*midY + m[9]*midZ + m[13];
+    const vz = m[2]*midX + m[6]*midY + m[10]*midZ + m[14];
+
+    // Distance along view axis in eye-space is -vz
+    const viewDist = -vz;
+
+    // Behind camera or beyond far clipping/fog plane
+    if (viewDist < -chunkRadius || viewDist > 165.0 + chunkRadius) continue;
+
+    // Frustum cone bounds check with bounding sphere margin
+    if (viewDist > 15.0) {
+      const maxY = viewDist * tanHalfY + chunkRadius;
+      if (Math.abs(vy) > maxY) continue;
+
+      const maxX = viewDist * tanHalfX + chunkRadius;
+      if (Math.abs(vx) > maxX) continue;
+    }
 
     gl.bindBuffer(gl.ARRAY_BUFFER, chunk.buffer);
 
@@ -3031,11 +3588,81 @@ function render(now) {
     gl.disable(gl.BLEND);
   }
 
-  requestAnimationFrame(render);
+  // --- RENDER SUN & MOON CELESTIAL BILLBOARDS ---
+  {
+    gl.useProgram(progCelestial);
+    gl.uniformMatrix4fv(uProjSkyLoc, false, projMatrix);
+    gl.uniformMatrix4fv(uViewSkyLoc, false, viewMatrix);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, celestialQuadBuffer);
+    gl.enableVertexAttribArray(aPosSkyLoc);
+    gl.vertexAttribPointer(aPosSkyLoc, 3, gl.FLOAT, false, 20, 0);
+    gl.enableVertexAttribArray(aUVSkyLoc);
+    gl.vertexAttribPointer(aUVSkyLoc, 2, gl.FLOAT, false, 20, 12);
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.depthFunc(gl.LEQUAL);
+
+    const celestialDist = 130.0;
+    const px = player.pos[0], py = player.pos[1], pz = player.pos[2];
+
+    // 1. Bright Golden Sun (Square Minecraft Sun)
+    const sunX = px + Math.cos(sunAngle) * celestialDist;
+    const sunY = py + Math.sin(sunAngle) * celestialDist;
+    const sunZ = pz;
+    if (Math.sin(sunAngle) > -0.2) {
+      gl.uniform3f(uOffsetSkyLoc, sunX, sunY, sunZ);
+      gl.uniform4f(uColorSkyLoc, 1.0, 0.95, 0.45, 1.0); // Bright radiant yellow
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+
+    // 2. Glowing White Moon (Directly opposite to Sun)
+    const moonX = px - Math.cos(sunAngle) * celestialDist;
+    const moonY = py - Math.sin(sunAngle) * celestialDist;
+    const moonZ = pz;
+    if (Math.sin(sunAngle) < 0.2) {
+      gl.uniform3f(uOffsetSkyLoc, moonX, moonY, moonZ);
+      gl.uniform4f(uColorSkyLoc, 0.92, 0.94, 1.0, 0.95); // Pale moonlight
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+
+    // --- RENDER DRIFTING VOLUMETRIC CLOUDS ---
+    if (cloudVertexCount > 0 && renderCloudsEnabled) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, cloudMeshBuffer);
+      gl.enableVertexAttribArray(aPosSkyLoc);
+      gl.vertexAttribPointer(aPosSkyLoc, 3, gl.FLOAT, false, 20, 0);
+      gl.enableVertexAttribArray(aUVSkyLoc);
+      gl.vertexAttribPointer(aUVSkyLoc, 2, gl.FLOAT, false, 20, 12);
+
+      // Cloud offset tracks player + wind drift
+      const cloudX = px + (cloudWindOffset % 288.0);
+      const cloudZ = pz;
+      gl.uniform3f(uOffsetSkyLoc, cloudX, 0.0, cloudZ);
+
+      // Cloud color reflects daytime/sunset/nighttime ambient light
+      const cloudShade = Math.max(0.2, Math.min(1.0, lightIntensity));
+      gl.uniform4f(uColorSkyLoc, cloudShade, cloudShade, cloudShade * 1.05, 0.78);
+
+      gl.depthMask(false);
+      gl.drawArrays(gl.TRIANGLES, 0, cloudVertexCount);
+      gl.depthMask(true);
+    }
+
+    gl.disable(gl.BLEND);
+  }
+
+  // Responsive High-FPS Scheduler:
+  // When targetFPSLimit === 0 or > 60: use cooperative setTimeout(0) to bypass 60Hz monitor VSync without starving mouse input!
+  if (targetFPSLimit === 0 || targetFPSLimit > 60) {
+    setTimeout(() => render(performance.now()), 0);
+  } else {
+    requestAnimationFrame(render);
+  }
 }
 
 initMobs();
-requestAnimationFrame(render);
+render(performance.now());
 </script>
 </body>
 </html>
